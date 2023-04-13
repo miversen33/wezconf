@@ -673,6 +673,8 @@ lib.default_config = {
             { key = ",", mods = "LEADER", action = wezterm.action.ActivateTabRelative(-1)},
             { key = "n", mods = "LEADER|CTRL", action = wezterm.action.SpawnTab('CurrentPaneDomain')},
             { key = "c", mods = "LEADER", action = wezterm.action.SwitchToWorkspace },
+            { key = "c", mods = "CTRL|LEADER", action = wezterm.action.SwitchToWorkspace },
+            { key = "q", mods = "LEADER", action = wezterm.action.CloseCurrentPane({confirm=true})},
             {
                 key = '$',
                 mods = 'LEADER|SHIFT',
