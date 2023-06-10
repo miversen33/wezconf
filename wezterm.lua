@@ -1,6 +1,6 @@
 local lib = require("lib")
 local wezterm = require("wezterm")
-local nerdfonts = wezterm.nerdfonts
+
 
 -- Your custom configuration. This will be merged with the default config.
 -- This will take "precidence" over any options in the default configuration
