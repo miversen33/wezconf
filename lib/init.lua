@@ -297,18 +297,35 @@ function lib.compile_config_to_wez(config)
         end)
     end
     if config.domains then
-        wezterm.log_info("miversen wezconf: Compiling Domains")
-        local default_domain = nil
-        for domain_name, opts in pairs(config.domains) do
-            local domain_key = domain_name ~= 'tls' and string.format("%s_domains", domain_name) or 'tls_servers'
-            opts.name = domain_name
-            if opts.default then
-                opts.default = nil
-                default_domain = domain_name
+        local default_domain = config.domains.default
+        if config.domains.unix then
+            wezterm.log_info("miversen wezconf: Compiling Unix Domains")
+            wez_conf['unix_domains'] = config.domains.unix
+        end
+        if config.domains.ssh then
+            wezterm.log_info("miversen wezconf: Compiling SSH Domains")
+            local ssh_domains = nil
+            if config.domains.ssh.default then
+                ssh_domains = {}
+                for host, config in pairs(wezterm.enumerate_ssh_hosts()) do
+                    table.insert(ssh_domains, {
+                        name = host,
+                        remote_address = config.hostname,
+                        multiplexing = 'None',
+                    })
+                end
+            else
+                ssh_domains = config.domains.ssh
             end
-            wez_conf[domain_key] = {opts}
+            wez_conf['ssh_domains'] = ssh_domains
+        end
+        if config.domains.tls then
+            wezterm.log_info("miversen wezconf: Compiling TLS Domains")
+            wez_conf['tls_servers'] = config.domains.tls.servers or nil
+            wez_conf['tls_clients'] = config.domains.tls.clients or nil
         end
         if default_domain then
+            wezterm.log_info(string.format('miversen wezconf: Setting %s as default multiplexer domain', default_domain))
             table.insert(startup_args, 'connect')
             table.insert(startup_args, default_domain)
         end
@@ -849,13 +866,23 @@ lib.default_config = {
     prefer_egl = true,
     -- Passed directly to wezterm
     domains = {
+        -- This sets the default "connect on startup" domain. This must
+        -- match the name of a domain.
+        default = 'local unix socket',
         unix = {
-            -- Valid unix domain defaults can be placed here
-            -- Note, a special _default_ key can be provided to 
-            -- **any** of the items you put in domains.
-            -- If there are multiple defaults, the last alphabetical domain
-            -- is used (just how lua pairs works. Dont set multiple defaults
-            -- you nonce)
+            -- Valid Unix Domains. These are passed directly to `wezterm`
+            { name = "local unix socket" }
+        },
+        ssh = {
+            -- Valid SSH domains. `default = true` will
+            -- cause wezconf to simply enumerate the ssh configuration
+            -- found under the current user
+            --
+            -- This value can _also_ be a table of items that will
+            -- be passed through directly to wezterm.
+            --
+            -- Note: `default` and a table of items are mutually exclusive.
+            -- Use one or the other
             default = true
         }
     },
