@@ -446,11 +446,15 @@ lib.components = {
         end
     end,
     caps_indicator = function(icon)
-        icon = icon or 'בּ'
-        return function()
+        icon = icon or 'בּ '
+        return function(window)
             -- We can't use this yet as there doesn't appear to be a way
             -- to tell if caps lock is currently "enabled" or not?
             local caps_enabled = false
+            if window and window.keyboard_modifiers then
+                local _, leds = window:keyboard_modifiers()
+                caps_enabled = leds == 'CAPS_LOCK'
+            end
             return caps_enabled and string.format("%s", icon) or ''
         end
     end,
