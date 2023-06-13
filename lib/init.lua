@@ -299,6 +299,13 @@ function lib.compile_config_to_wez(config)
             return config.format_tab(tab, tabs, panes, _config, hover, max_width)
         end)
     end
+    if config.tab_bar_style then
+        wezterm.log_info("miversen wezconf: Setting Tab Bar Style. Note, this seems to only apply to the new_tab button")
+        wez_conf.tab_bar_style = {
+            new_tab = config.tab_bar_style.new_tab,
+            new_tab_hover = config.tab_bar_style.new_tab_hover
+        }
+    end
     if config.domains then
         local default_domain = config.domains.default
         if config.domains.unix then
@@ -860,7 +867,31 @@ lib.default_config = {
             foreground = 'BLACK'
         },
     },
-    format_tab = lib.tab_styles.diamond('#37b6ff', 'BLACK'),
+    -- Probably don't touch this but if you want to make your own, it is passed straight through to wezterm. Have fun
+    tab_bar_style = {
+        new_tab_hover = wezterm.format({
+            { Foreground = { Color = 'WHITE' }},
+            { Background = { Color = 'BLACK' }},
+            { Text = wezterm.nerdfonts.ple_left_half_circle_thick },
+            { Foreground = { Color = 'BLACK' }},
+            { Background = { Color = 'WHITE' }},
+            { Text = wezterm.nerdfonts.fa_plus },
+            { Foreground = { Color = 'WHITE' }},
+            { Background = { Color = 'BLACK' }},
+            { Text = wezterm.nerdfonts.ple_right_half_circle_thick }
+        }),
+        new_tab = wezterm.format({
+            { Foreground = { Color = 'BLACK' }},
+            { Background = { Color = 'BLACK' }},
+            { Text = wezterm.nerdfonts.ple_left_half_circle_thick },
+            { Foreground = { Color = 'WHITE' }},
+            { Background = { Color = 'BLACK' }},
+            { Text = wezterm.nerdfonts.fa_plus },
+            { Foreground = { Color = 'BLACK' }},
+            { Background = { Color = 'BLACK' }},
+            { Text = wezterm.nerdfonts.ple_right_half_circle_thick }
+        })
+    },
     format_tab = lib.tab_styles.diamond(default_tab_foreground, default_tab_background),
     -- If you don't like how I have the "groups" configured,
     -- you can instead provide the following keys, with a valid callback function.
