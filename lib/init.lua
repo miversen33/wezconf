@@ -295,8 +295,19 @@ function lib.compile_config_to_wez(config)
     end
     if config.format_tab then
         wezterm.log_info("miversen wezconf: Setting Format Tab Event Callback")
+        local format_func = config.format_tab
+        if type(config.format_tab) == 'string' then
+            local tab_foreground = config.format_tab_foreground and config.format_tab_foreground or default_tab_foreground
+            local tab_background = config.format_tab_background and config.format_tab_background or default_tab_background
+            if lib.tab_styles[config.format_tab] then
+                format_func = lib.tab_styles[config.format_tab](tab_foreground, tab_background)
+            else
+                wezterm.log_warn(string.format("miversen wezconf: Unable to find tab style: %s!", config.format_tab))
+                format_func = function(...) end
+            end
+        end
         wezterm.on('format-tab-title', function(tab, tabs, panes, _config, hover, max_width)
-            return config.format_tab(tab, tabs, panes, _config, hover, max_width)
+            return format_func(tab, tabs, panes, _config, hover, max_width)
         end)
     end
     if config.tab_bar_style then
