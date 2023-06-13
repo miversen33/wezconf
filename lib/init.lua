@@ -346,10 +346,10 @@ function lib.compile_config_to_wez(config)
             local ssh_domains = nil
             if config.domains.ssh.default then
                 ssh_domains = {}
-                for host, config in pairs(wezterm.enumerate_ssh_hosts()) do
+                for host, ssh_config in pairs(wezterm.enumerate_ssh_hosts()) do
                     table.insert(ssh_domains, {
                         name = host,
-                        remote_address = config.hostname,
+                        remote_address = ssh_config.hostname,
                         multiplexing = 'None',
                     })
                 end
