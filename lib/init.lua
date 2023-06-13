@@ -420,6 +420,13 @@ lib.components = {
             return message
         end
     end,
+    domain = function()
+        return function()
+            local _d = wezterm.mux.get_domain()
+            return _d and _d:name() or nil
+
+        end
+    end,
     caps_indicator = function(icon)
         icon = icon or 'בּ'
         return function()
@@ -817,6 +824,7 @@ lib.default_config = {
             foreground = 'BLACK',
         },
         {
+            lib.components.domain(),
             lib.components.host(),
             background = '#fc669b',
             foreground = 'BLACK',
