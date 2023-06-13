@@ -11,6 +11,24 @@ wezterm.miversen_wezconf = lib
 
 -- Helper functions
 
+local function rename_workspace()
+    return wezterm.action.PromptInputLine({
+        description = wezterm.format {
+            { Attribute = { Intensity = 'Bold' } },
+            { Foreground = { AnsiColor = 'Fuchsia' } },
+            { Text = 'Enter name for new workspace' },
+        },
+        action = wezterm.action_callback(function(window, pane, line)
+            -- line will be `nil` if they hit escape without entering anything
+            -- An empty string if they just hit enter
+            -- Or the actual line of text they wrote
+            if line then
+                wezterm.mux.rename_workspace( wezterm.mux.get_active_workspace(), line )
+            end
+        end)
+    })
+end
+
 function lib.action_exists(action)
     local status = pcall(function()
         local _ = wezterm.action[action]
@@ -789,26 +807,7 @@ lib.default_config = {
                     'PromptInputLine',
                     'Your current version of wezterm does not support active workspace rename.'
                         .. ' Consider using `wezterm cli rename-workspace` instead',
-                    function()
-                        return wezterm.action.PromptInputLine({
-                            description = wezterm.format {
-                                { Attribute = { Intensity = 'Bold' } },
-                                { Foreground = { AnsiColor = 'Fuchsia' } },
-                                { Text = 'Enter name for new workspace' },
-                            },
-                            action = wezterm.action_callback(function(window, pane, line)
-                                -- line will be `nil` if they hit escape without entering anything
-                                -- An empty string if they just hit enter
-                                -- Or the actual line of text they wrote
-                                if line then
-                                    wezterm.mux.rename_workspace(
-                                        wezterm.mux.get_active_workspace(),
-                                        line
-                                    )
-                                end
-                            end)
-                        })
-                    end
+                    rename_workspace
                     )},
                 {
                     key = "s",
