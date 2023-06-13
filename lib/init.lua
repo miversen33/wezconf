@@ -597,7 +597,7 @@ lib.tab_styles = {
         local hover_foreground = wezterm.color.parse(orig_foreground):lighten(scale)
 
         return function(tab, tabs, panes, config, hover, max_width, location)
-            local max_width_offset = - 5
+            local max_width_offset = - 4
             local tab_background =
                 hover and hover_background
                 or tab.is_active and background
@@ -654,7 +654,7 @@ lib.tab_styles = {
         local hover_foreground = wezterm.color.parse(orig_foreground):lighten(scale)
 
         return function(tab, tabs, panes, config, hover, max_width, location)
-            local max_width_offset = - 5
+            local max_width_offset = - 4
             local tab_background =
                 hover and hover_background
                 or tab.is_active and background
