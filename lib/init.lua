@@ -575,15 +575,16 @@ lib.tab_styles = {
         local hover_foreground = wezterm.color.parse(orig_foreground):lighten(scale)
 
         return function(tab, tabs, panes, config, hover, max_width, location)
+            local max_width_offset = - 5
             local tab_background =
-            hover and hover_background
-            or tab.is_active and background
-            or inactive_background
+                hover and hover_background
+                or tab.is_active and background
+                or inactive_background
             local tab_foreground =
-            hover and hover_foreground
-            or tab.is_active and foreground
-            or inactive_foreground
-            local title = wezterm.truncate_right(tab.active_pane.title, max_width - 5)
+                hover and hover_foreground
+                or tab.is_active and foreground
+                or inactive_foreground
+            local title = wezterm.truncate_left(tab.active_pane.title, max_width + max_width_offset)
             title = string.format("%s %s", tab.tab_id, title)
             local tab_components = {}
             if wezterm.miversen_wezconf.merged_conf.tab_bar_appearance ~= 'Fancy' then
