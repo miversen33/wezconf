@@ -4,6 +4,9 @@ local wezterm = require("wezterm")
 local nerdfonts = wezterm.nerdfonts
 
 local lib = {}
+local default_tab_foreground = '#37b6ff'
+local default_tab_background = 'BLACK'
+
 wezterm.miversen_wezconf = lib
 
 -- Helper functions
@@ -850,6 +853,7 @@ lib.default_config = {
         },
     },
     format_tab = lib.tab_styles.diamond('#37b6ff', 'BLACK'),
+    format_tab = lib.tab_styles.diamond(default_tab_foreground, default_tab_background),
     -- If you don't like how I have the "groups" configured,
     -- you can instead provide the following keys, with a valid callback function.
     -- Note, if these are provided, we will ignore whatever is in the "non raw" version
