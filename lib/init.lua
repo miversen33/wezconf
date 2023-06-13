@@ -545,7 +545,7 @@ lib.components = {
                     remaining = 20
                 end
             elseif current_charge_state == 'Full' then
-                nerdfont_query_string = 'mdi_battery'
+                nerdfont_query_string = 'md_battery'
             end
             nerdfont_query_string = string.format(nerdfont_query_string, rounded_charge_level)
             local battery_percentage = show_percentage and string.format("%s%%", math.floor(current_charge_level * 100)) or ''
