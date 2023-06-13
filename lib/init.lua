@@ -909,8 +909,22 @@ function lib.merge_config(user_config)
     return merged_conf
 end
 
-function lib.load(user_config)
-    return lib.compile_config_to_wez(lib.merge_config(user_config))
+local function dump_compiled_config(config, dump_location)
+    local out_file = io.open(dump_location, 'w')
+    wezterm.log_info(string.format("miversen wezconf: Dumping compiled config to %s", dump_location))
+    if not out_file then return end
+    out_file:write(wezterm.json_encode(config))
+    out_file:flush()
+    out_file:close()
+end
+
+function lib.load(user_config, compile_out_file)
+    local compiled_conf = lib.compile_config_to_wez(lib.merge_config(user_config))
+    if compile_out_file and not wezterm.GLOBAL.compiled then
+        dump_compiled_config(compiled_conf, compile_out_file)
+        wezterm.GLOBAL.compiled = true
+    end
+    return compiled_conf
 end
 
 return lib
