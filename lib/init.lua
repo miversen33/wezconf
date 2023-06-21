@@ -597,7 +597,11 @@ lib.tab_styles = {
         local hover_foreground = wezterm.color.parse(orig_foreground):lighten(scale)
 
         return function(tab, tabs, panes, config, hover, max_width, location)
-            local max_width_offset = - 4
+            local max_width_offset = - 5
+            local width = max_width + max_width_offset
+            if width < math.abs(max_width_offset) then
+                width = max_width
+            end
             local tab_background =
                 hover and hover_background
                 or tab.is_active and background
@@ -606,7 +610,7 @@ lib.tab_styles = {
                 hover and hover_foreground
                 or tab.is_active and foreground
                 or inactive_foreground
-            local title = wezterm.truncate_left(tab.active_pane.title, max_width + max_width_offset)
+            local title = wezterm.truncate_left(tab.active_pane.title, width)
             title = string.format("%s %s", tab.tab_id, title)
             local tab_components = {}
             if wezterm.miversen_wezconf.merged_conf.tab_bar_appearance ~= 'Fancy' then
@@ -654,7 +658,11 @@ lib.tab_styles = {
         local hover_foreground = wezterm.color.parse(orig_foreground):lighten(scale)
 
         return function(tab, tabs, panes, config, hover, max_width, location)
-            local max_width_offset = - 4
+            local max_width_offset = - 5
+            local width = max_width + max_width_offset
+            if width < math.abs(max_width_offset) then
+                width = max_width
+            end
             local tab_background =
                 hover and hover_background
                 or tab.is_active and background
@@ -663,7 +671,7 @@ lib.tab_styles = {
                 hover and hover_foreground
                 or tab.is_active and foreground
                 or inactive_foreground
-            local title = wezterm.truncate_left(tab.active_pane.title, max_width + max_width_offset)
+            local title = wezterm.truncate_left(tab.active_pane.title, width)
             title = string.format("%s %s", tab.tab_id, title)
             local tab_components = {}
             if wezterm.miversen_wezconf.merged_conf.tab_bar_appearance ~= 'Fancy' then
