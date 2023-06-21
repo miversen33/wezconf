@@ -483,12 +483,20 @@ lib.components = {
     end,
     user = function()
         return function(window, pane)
-            return pane:get_user_vars() and pane:get_user_vars().WEZTERM_USER
+            local _, user_vars = pcall(pane.get_user_vars, pane)
+            if _ ~= true then
+                return ''
+            end
+            return user_vars.WEZTERM_USER
         end
     end,
     host = function()
         return function(window, pane)
-            return pane:get_user_vars() and pane:get_user_vars().WEZTERM_HOST
+            local _, user_vars = pcall(pane.get_user_vars, pane)
+            if _ ~= true then
+                return ''
+            end
+            return user_vars.WEZTERM_HOST
         end
     end,
     workspace = function()
@@ -525,10 +533,13 @@ lib.components = {
     tmux = function(icon)
         icon = icon or '﬑ '
         return function(window, pane)
-            if not pane:get_user_vars() then return end
+            local _, user_vars = pcall(pane.get_user_vars, pane)
+            if _ ~= true then
+                return ''
+            end
             local is_tmux =
-                (pane:get_user_vars().WEZTERM_IN_TMUX and pane:get_user_vars().WEZTERM_IN_TMUX ~= "0")
-                or (pane:get_user_vars().WEZTERM_PROG and pane:get_user_vars().WEZTERM_PROG:match('^tmux'))
+                (user_vars.WEZTERM_IN_TMUX and user_vars.WEZTERM_IN_TMUX ~= "0")
+                or (user_vars.WEZTERM_PROG and user_vars.WEZTERM_PROG:match('^tmux'))
             return is_tmux and icon
         end
     end,
