@@ -525,7 +525,7 @@ lib.components = {
             local override_config = window:get_config_overrides() or {}
             -- TODO: Come up with a better way to show this????
             if override_config.leader then
-                text = text .. " " .. nerdfonts.mdi_cancel
+                text = text .. " " .. nerdfonts.md_cancel
             end
             return text
         end
