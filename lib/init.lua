@@ -222,6 +222,10 @@ function lib.compile_config_to_wez(config)
     -- wezterm.config_builder returns a special table that
     -- doesn't allow us to append items to a table inside of it...
     local startup_args = {}
+    local os =
+        wezterm.target_triple:match('gnu') and 'linux'
+        or wezterm.target_triple:match('darwin') and 'mac'
+        or 'windows'
     if config.startup_args then
         wezterm.log_info("miversen wezconf: Compiling Startup Args")
         for _, arg in ipairs(config.startup_args) do
