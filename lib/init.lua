@@ -339,6 +339,27 @@ function lib.compile_config_to_wez(config)
             new_tab_hover = config.tab_bar_style.new_tab_hover
         }
     end
+    if config.default_shell then
+        local default_shell = config.default_shell[os]
+        wezterm.log_info(string.format("miversen wezconf: Compiling Default Shell -> `%s`", default_shell))
+        if default_shell:match('%s') then
+            wezterm.log_warn(string.format("miversen wezconf: Wezconf does not escape spaces in your shell path. I hope you know what you're doing! -> `%s`", default_shell))
+        end
+        default_shell = default_shell or 'system'
+        if default_shell:match('wsl') then
+            default_shell = {"wsl", "--distribution", default_shell:match('wsl:(.*)$')}
+        else
+            if default_shell == 'system' then
+                default_shell = nil
+            else
+                default_shell = {default_shell}
+            end
+        end
+        if default_shell then
+            wezterm.log_info("miversen wezconf: Setting Shell to", default_shell)
+            wez_conf['default_prog'] = default_shell
+        end
+    end
     if config.domains then
         local default_domain = config.domains.default
         if config.domains.unix then
@@ -420,7 +441,7 @@ function lib.compile_config_to_wez(config)
     if #startup_args > 0 then
         wez_conf.default_gui_startup_args = startup_args
     end
-
+    -- ------------------------------------------------------THIS MUST BE THE LAST THING WE PROCESS
     if config.raw then
         for key, value in pairs(config.raw) do
             wezterm.log_info(string.format("miversen wezconf: Compiling Raw Option %s", key))
@@ -740,6 +761,21 @@ lib.default_config = {
     --
     -- startup_args = {}
     -- If provided, we will use these args for the `default_gui_startup_args` option
+    default_shell = {
+        windows = 'pwsh',
+        linux = 'system',
+        mac = 'system',
+    },
+    -- If provided, this will specify what shell to use for new instances of wezterm on your system.
+    -- Each key indicates what shell to use for each operating system.
+    -- Valid values for each OS are
+    -- `system` (default)
+    --      - This will tell wezconf to not worry about the shell and let the OS figure it out.
+    -- `path_to_shell` (eg: /bin/bash or /bin/zsh)
+    --      - This will tell wezconf to use the exact path provided
+    -- wsl:instance (windows specific) (eg: wsl:Ubuntu, or wsl:rocky)
+    --      - If provided, we will use the wsl instance provided, if possible. If not, we will simply use `system`
+    --      - **Note, the instance name must be exact**
     tab_bar_appearance = 'Fancy',
     -- Passed directly to wezterm
     --
