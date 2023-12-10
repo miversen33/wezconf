@@ -388,6 +388,15 @@ function lib.compile_config_to_wez(config)
             wez_conf['tls_servers'] = config.domains.tls.servers or nil
             wez_conf['tls_clients'] = config.domains.tls.clients or nil
         end
+        if config.domains.wsl and next(config.domains.wsl) then
+            wezterm.log_info("miversen wezconf: Compiling WSL Domains")
+            local wsl_domains = {}
+            for domain_name, domain_details in pairs(config.domains.wsl) do
+                domain_details['name'] = domain_name
+                table.insert(wsl_domains, domain_details)
+            end
+            wez_conf['wsl_domains'] = wsl_domains
+        end
         if default_domain then
             wezterm.log_info(string.format('miversen wezconf: Setting %s as default multiplexer domain', default_domain))
             table.insert(startup_args, 'connect')
@@ -1058,7 +1067,13 @@ lib.default_config = {
             -- Note: `default` and a table of items are mutually exclusive.
             -- Use one or the other
             default = true
-        }
+        },
+        -- wsl = {
+        --     -- Valid WSL Domains. Default here will simply let wezterm figure it out.
+        --     -- Please note, if you specify a domain here, wezterm will _not_ figure out
+        --     -- the available wsl domains and you will need to specify _all_ domains you want
+        --     -- to use. Ye be warned
+        -- }
     },
     detect_password_input = true
     -- Passed directly to wezterm
