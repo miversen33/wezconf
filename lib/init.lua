@@ -587,7 +587,7 @@ lib.components = {
             local current_charge_state = battery_info.state
             local remaining = (current_charge_state == 'Charging' or current_charge_state == 'Full') and battery_info.time_to_full or battery_info.time_to_empty
             -- Fail safe just in case this is nil
-            if not remaining then remaining = '' end
+            if not remaining then remaining = 0 end
             local warn_state = ''
             if rounded_charge_level <= warn_threshold then
                 warn_state = nerdfonts.fa_exclamation
