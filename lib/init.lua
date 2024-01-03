@@ -404,6 +404,11 @@ function lib.compile_config_to_wez(config)
         end
     end
 
+    if config.blur then
+        wezterm.log_info("miversen wezconf: Compiling background blur")
+        wez_conf['win32_system_backdrop'] = 'Acrylic'
+        wez_conf['macos_window_background_blur'] = 20
+    end
     local left_status_bar_callback = nil
     local right_status_bar_callback = nil
     if config.raw_left_status_bar then
@@ -1075,8 +1080,10 @@ lib.default_config = {
         --     -- to use. Ye be warned
         -- }
     },
-    detect_password_input = true
+    detect_password_input = true,
     -- Passed directly to wezterm
+    blur = true,
+    -- Attempts to blur the background of wezterm. Currently only works on windows and ilnux
 }
 
 function lib.merge_config(user_config)
